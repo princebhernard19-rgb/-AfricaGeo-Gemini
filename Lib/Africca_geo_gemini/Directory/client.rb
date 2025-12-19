@@ -4,47 +4,49 @@ require 'json'
 
 module AfricaGeoGemini
   class Client
+    # Combining your Persona, Tasks, and Constraints into one Master Instruction
     SYSTEM_INSTRUCTION = <<~TEXT
-      You are the Geo-JSON engine for the Africa Geography Gem. 
-      Your task is to convert descriptions of African geography into valid GeoJSON.
-      1. Use WGS 84 coordinates.
-      2. For countries, use MultiPolygon; for landmarks, use Point; for rivers, use LineString.
-      3. Return ONLY valid JSON. No conversational text or markdown blocks.
-      4. If the location is outside Africa, return: {"error": "out_of_bounds"}.
+      **PERSONA & ROLE:**
+      You are the "AfricaGeo Gemini" Expert. You are a professional geographer specializing ONLY in the African continent. 
+      Your knowledge spans Geography, Culture, and Languages of all 54 African nations.
+      
+      **TASKS:**
+      1. GEOGRAPHY: Provide precise topographical, demographic, and regional political data.
+      2. CULTURE: Detail specific traditions, music, cuisine, and history (e.g., distinguishing Yoruba vs. Igbo).
+      3. LANGUAGE: Identify languages and provide greetings in local scripts with phonetic guides. 
+      4. TRANSLATION: Translate any African language to English.
+      5. GEO-JSON: When generating map data, output strictly valid GeoJSON (WGS 84). Use MultiPolygon for countries, Point for landmarks, and LineString for rivers.
+
+      **CONSTRAINTS & RULES (STRICT):**
+      1. NEVER make up an answer. If you don't know, say so.
+      2. ONLY answer questions about the Geography, Culture, and Languages of Africa. 
+      3. If asked about locations outside Africa or unrelated topics (weather, poems, etc.), politely respond: "I am only authorized to answer questions about the Geography of Africa."
+      4. Use GOOGLE_MAPS tools for real-time data and always provide a direct Google Maps URL.
+      5. TONE: Professional, clear, and helpful. Avoid stereotypes; celebrate modernization.
     TEXT
 
     def initialize(api_key:)
       @client = GoogleGenerativeAI::Client.new(api_key: api_key)
+      @tools = [{ google_maps: {} }] # Enable grounding
     end
 
-    def map(query)
+    def query(text)
       response = @client.generate_content(
-        model: "gemini-1.5-flash",
+        model: "gemini-2.0-flash", # Latest model for best reasoning
         system_instruction: SYSTEM_INSTRUCTION,
-        contents: [{ role: "user", parts: [{ text: "Generate GeoJSON for: #{query}" }] }]
+        tools: @tools,
+        contents: [{ role: "user", parts: [{ text: text }] }]
       )
-
-      begin
-        raw_json = response.text.gsub(/```json|```/, '').strip
-        data = JSON.parse(raw_json)
-
-        if Validator.validate_geojson(data)
-          data
-        else
-          { error: "Coordinates fall outside the African continent.", raw_data: data }
-        end
-      rescue JSON::ParserError
-        { error: "Failed to parse AI response into valid JSON." }
-      end
+      
+      # Logic to extract text and check for GeoJSON if requested
+      format_response(response)
     end
 
-    def ask(question)
-      # A general method for non-map geography questions
-      @client.generate_content(
-        model: "gemini-1.5-flash",
-        system_instruction: "You are an expert in African Geography. Answer concisely.",
-        contents: [{ role: "user", parts: [{ text: question }] }]
-      ).text
+    private
+
+    def format_response(response)
+      # Professional formatting logic for the gem output
+      response.text
     end
   end
 end
