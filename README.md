@@ -5,3 +5,6 @@ AfricaGeo Gemini is a high-performance Ruby gem that leverages Google's Gemini A
  * The Geo-JSON Generator: Automatically converts natural language descriptions into valid GeoJSON objects for mapping.
  * Geospatial Guardrails: A built-in validation layer that ensures all coordinates generated fall strictly within the African continent's bounding box.
  * Regional Context: Specialized knowledge of African Union (AU) economic blocs like ECOWAS, SADC, and EAC.
+Usage section:
+client = AfricaGeoGemini::Client.new(api_key: "YOUR_KEY")
+client.map("Victoria Falls") # Returns GeoJSON Point
