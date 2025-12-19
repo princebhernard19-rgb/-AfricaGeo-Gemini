@@ -6,3 +6,13 @@ AfricaGeo Gemini is a high-performance Ruby gem that leverages Google's Gemini A
  * Geospatial Guardrails: A built-in validation layer that ensures all coordinates generated fall strictly within the African continent's bounding box.
  * Regional Context: Specialized knowledge of African Union (AU) economic blocs like ECOWAS, SADC, and EAC.
  * 
+
+Usage:
+## 🛡️ Expert Constraints
+The gem is strictly bound to African Geography. 
+- **Query:** "What is the capital of France?" 
+- **Response:** "I am only authorized to answer questions about the Geography of Africa."
+
+## 🎭 Cultural & Linguistic Queries
+```ruby
+client.query("Tell me about the food culture in Luanda and give me a greeting in Umbundu.")
