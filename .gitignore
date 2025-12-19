@@ -1,0 +1,37 @@
+# === API Security ===
+# Never upload your API keys. Use a .env file locally and ignore it here.
+.env
+.env.test
+.env.production
+.env.local
+
+# === Ruby Gems & Bundler ===
+# Ignore the local bundle folder and cached gems
+/.bundle/
+/vendor/bundle/
+/bin/
+/pkg/
+/spec/reports/
+/test/tmp/
+/test/version_tmp/
+/tmp/
+*.gem
+.bundle
+
+# === Development Tools ===
+# Ignore VS Code, RubyMine, and Mac system files
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo
+.rake_tasks
+
+# === Documentation & Logs ===
+/doc/
+/log/*.log
+/rerun.txt
+
+# === Testing ===
+# If you use SimpleCov for test coverage
+/coverage/
